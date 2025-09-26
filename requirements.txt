@@ -1,5 +1,2 @@
-fastapi
-uvicorn[standard]
-transformers==4.30.0
-onnxruntime
-numpy
+fastapi==0.111.1
+uvicorn[standard]==0.23.2
