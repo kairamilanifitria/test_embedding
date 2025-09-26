@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import pipeline
 
-app = FastAPI(title="Tiny Hugging Face API")
+app = FastAPI(title="Tiny GPT-2 API")
 
-# Tiny model for CPU
+# Lightweight CPU model
 model_name = "sshleifer/tiny-gpt2"
-generator = pipeline("text-generation", model=model_name)
+generator = pipeline("text-generation", model=model_name, device=-1)  # CPU only
 
 class RequestBody(BaseModel):
     prompt: str
