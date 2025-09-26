@@ -1,28 +1,22 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
-from transformers import AutoTokenizer, AutoModel
-import torch
+from transformers import pipeline
 
-app = FastAPI()
+app = FastAPI(title="Tiny Hugging Face API")
 
-# Use a smaller model first to fit Railway free plan
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-model = AutoModel.from_pretrained(MODEL_NAME)
+# Tiny model for CPU
+model_name = "sshleifer/tiny-gpt2"
+generator = pipeline("text-generation", model=model_name)
 
-class EmbedRequest(BaseModel):
-    texts: List[str]
+class RequestBody(BaseModel):
+    prompt: str
+    max_length: int = 50
 
-@app.post("/embed")
-def embed(req: EmbedRequest):
-    # Tokenize batch of texts
-    inputs = tokenizer(req.texts, return_tensors="pt", padding=True, truncation=True)
+@app.get("/")
+def read_root():
+    return {"message": "Tiny GPT-2 API is running!"}
 
-    with torch.no_grad():
-        outputs = model(**inputs)
-
-    # Use [CLS] token representation
-    embeddings = outputs.last_hidden_state[:, 0, :].numpy().tolist()
-
-    return {"embeddings": embeddings}
+@app.post("/generate")
+def generate_text(request: RequestBody):
+    result = generator(request.prompt, max_length=request.max_length, num_return_sequences=1)
+    return {"generated_text": result[0]["generated_text"]}
