@@ -1,4 +1,4 @@
 fastapi
-uvicorn
-transformers==4.41.2
+uvicorn[standard]
+transformers
 torch
