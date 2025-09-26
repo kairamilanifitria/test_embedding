@@ -6,7 +6,7 @@ import torch
 app = FastAPI()
 
 # Load model once at startup
-MODEL_NAME = "alibaba-nlp/gte-multilingual-base"
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(MODEL_NAME)
 
